@@ -11,11 +11,13 @@ namespace Book.Server.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<BookController> _logger;
 
-        public BookController(IBookRepository bookRepository, IUserRepository userRepository)
+        public BookController(IBookRepository bookRepository, IUserRepository userRepository, ILogger<BookController> logger)
         {
             _bookRepository = bookRepository;
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -25,7 +27,15 @@ namespace Book.Server.Controllers
         [HttpGet]
         public ActionResult GetBook([FromQuery] string? name, int page)
         {
-            return Ok(_bookRepository.GetBook(name, page));
+            try
+            {
+                return Ok(_bookRepository.GetBook(name, page));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -35,7 +45,15 @@ namespace Book.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetBook(long id)
         {
-            return Ok(await _bookRepository.GetBook(id));
+            try
+            {
+                return Ok(await _bookRepository.GetBook(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -44,7 +62,16 @@ namespace Book.Server.Controllers
         [HttpPost]
         public async Task<ActionResult> AddBook(Shared.Models.Book person)
         {
-            return Ok(await _bookRepository.AddBook(person));
+            try
+            {
+
+                return Ok(await _bookRepository.AddBook(person));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -53,7 +80,15 @@ namespace Book.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateBook(Shared.Models.Book book)
         {
-            return Ok(await _bookRepository.UpdateBook(book));
+            try
+            {
+                return Ok(await _bookRepository.UpdateBook(book));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -62,7 +97,15 @@ namespace Book.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBook(long id)
         {
-            return Ok(await _bookRepository.DeleteBook(id));
+            try
+            {
+                return Ok(await _bookRepository.DeleteBook(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Book.Server.Authorization;
 using Book.Server.Helpers;
 using Book.Server.Models;
+using Book.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -15,6 +16,8 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<BookValidator>();
+builder.Services.AddScoped<UserValidator>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 
 builder.Services.AddSwaggerGen(c =>
@@ -62,6 +65,8 @@ builder.Services.AddQuartz(q =>
 builder.Services.AddQuartzHostedService(
     q => q.WaitForJobsToComplete = true);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+
 
 var app = builder.Build();
 

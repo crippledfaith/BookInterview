@@ -13,11 +13,13 @@ namespace Book.Server.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly AppSettings _appSettings;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository, IOptions<AppSettings> appSettings)
+        public UserController(IUserRepository userRepository, IOptions<AppSettings> appSettings, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
             _appSettings = appSettings.Value;
+            _logger = logger;
         }
 
         /// <summary>
@@ -27,7 +29,15 @@ namespace Book.Server.Controllers
         [HttpPost("authenticate")]
         public ActionResult Authenticate(AuthenticateRequest request)
         {
-            return Ok(_userRepository.Authenticate(request));
+            try
+            {
+                return Ok(_userRepository.Authenticate(request));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                throw;
+            }
         }
 
 
@@ -37,7 +47,15 @@ namespace Book.Server.Controllers
         [HttpGet]
         public ActionResult GetUsers([FromQuery] string? name, int page)
         {
-            return Ok(_userRepository.GetUsers(name, page));
+            try
+            {
+                return Ok(_userRepository.GetUsers(name, page));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -46,7 +64,15 @@ namespace Book.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetUser(int id)
         {
-            return Ok(await _userRepository.GetUser(id));
+            try
+            {
+                return Ok(await _userRepository.GetUser(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -55,7 +81,16 @@ namespace Book.Server.Controllers
         [HttpPost]
         public async Task<ActionResult> AddUser(User user)
         {
-            return Ok(await _userRepository.AddUser(user));
+            try
+            {
+                return Ok(await _userRepository.AddUser(user));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -64,7 +99,16 @@ namespace Book.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(User user)
         {
-            return Ok(await _userRepository.UpdateUser(user));
+            try
+            {
+                return Ok(await _userRepository.UpdateUser(user));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -73,7 +117,15 @@ namespace Book.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            return Ok(await _userRepository.DeleteUser(id));
+            try
+            {
+                return Ok(await _userRepository.DeleteUser(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
